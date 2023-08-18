@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector, connect } from "react-redux";
+import { filterSongsById } from "./store/actions";
 
 export interface SongData {
   title: string;
@@ -16,6 +18,7 @@ interface SongProps {
 const Song: React.FC<SongProps> = ({ songs }) => {
   const [showChords, setShowChords] = useState(false);
   const { id } = useParams<{ id?: string }>(); // Make id optional to handle undefined
+  const dispatch = useDispatch();
 
   const songId = id ? parseInt(id, 10) : -1;
   const song = songs.find((song) => song.id === songId);
@@ -52,5 +55,10 @@ const Song: React.FC<SongProps> = ({ songs }) => {
     </div>
   );
 };
+const mapStateToProps = (state) => {
+  return {
+    songs: state.songs, // Assuming you've structured your state with filteredSongs
+  };
+};
 
-export default Song;
+export default connect(mapStateToProps)(Song);
