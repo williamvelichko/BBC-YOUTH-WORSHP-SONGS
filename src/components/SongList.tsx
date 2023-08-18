@@ -8,7 +8,6 @@ interface SongListProps {
 }
 
 const SongList: React.FC<SongListProps> = ({ songs }) => {
-  console.log(songs);
   return (
     <div className="flex justify-center mt-8">
       <div className="grid grid-cols-2 gap-6 max-w-4xl ">

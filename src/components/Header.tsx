@@ -1,25 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
-import { setSearchQuery } from "./store/actions";
+import { filterSongsBySearch } from "./store/actions";
 
 // interface HeaderProps {
 //   onSearch: (query: string) => void; // Callback function to handle search
 // }
-interface HeaderProps {
-  searchQuery: string; // Add searchQuery prop
-  setSearchQuery: (query: string) => void; // Add setSearchQuery prop
-}
+// interface HeaderProps {
+//   searchQuery: string; // Add searchQuery prop
+//   setSearchQuery: (query: string) => void; // Add setSearchQuery prop
+// }
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
+const Header: React.FC = () => {
   // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const searchQuery = e.target.value;
   //   onSearch(searchQuery);
   // };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchQuery = e.target.value;
-    setSearchQuery(searchQuery); // Update search query in Redux store
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    dispatch(filterSongsBySearch(query));
   };
 
   return (
@@ -47,19 +51,20 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery }) => {
             className="lg:w-1/2  border rounded px-4 py-2 focus:outline-none placeholder-gray-400 text-black mt-4 md:mt-0"
             type="text"
             placeholder="Search songs..."
-            onChange={handleInputChange}
+            value={searchQuery}
+            onChange={handleSearch}
           />
         </div>
       </div>
     </header>
   );
 };
-const mapStateToProps = (state) => ({
-  searchQuery: state.searchQuery,
-});
+// const mapStateToProps = (state) => ({
+//   searchQuery: state.searchQuery,
+// });
 
-const mapDispatchToProps = {
-  setSearchQuery,
-};
+// const mapDispatchToProps = {
+//   setSearchQuery,
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

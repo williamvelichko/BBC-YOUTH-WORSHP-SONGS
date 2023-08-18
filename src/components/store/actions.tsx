@@ -1,4 +1,4 @@
-import { FILTER_SONGS_BY_ID, SET_SEARCH_QUERY } from "./songsActionTypes"; // Import your SongData type
+import { FILTER_SONGS_BY_ID, FILTER_SONGS_BY_SEARCH } from "./songsActionTypes"; // Import your SongData type
 import { Dispatch } from "redux";
 
 export const filterSongsById = (id?: string) => {
@@ -8,9 +8,9 @@ export const filterSongsById = (id?: string) => {
   };
 };
 
-export const setSearchQuery = (query: string) => {
+export const filterSongsBySearch = (query: string) => {
   return {
-    type: SET_SEARCH_QUERY,
+    type: FILTER_SONGS_BY_SEARCH,
     payload: query,
   };
 };
