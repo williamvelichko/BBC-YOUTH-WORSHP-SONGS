@@ -4,19 +4,7 @@ import { useDispatch } from "react-redux";
 import { connect } from "react-redux";
 import { filterSongsBySearch } from "./store/actions";
 
-// interface HeaderProps {
-//   onSearch: (query: string) => void; // Callback function to handle search
-// }
-// interface HeaderProps {
-//   searchQuery: string; // Add searchQuery prop
-//   setSearchQuery: (query: string) => void; // Add setSearchQuery prop
-// }
-
 const Header: React.FC = () => {
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const searchQuery = e.target.value;
-  //   onSearch(searchQuery);
-  // };
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
 
