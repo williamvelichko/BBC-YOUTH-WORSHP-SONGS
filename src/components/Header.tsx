@@ -28,12 +28,6 @@ const Header: React.FC = () => {
             >
               All Songs
             </Link>
-            <Link
-              to="/add-song"
-              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
-            >
-              Add Song
-            </Link>
           </div>
           <input
             className="lg:w-1/2  border rounded px-4 py-2 focus:outline-none placeholder-gray-400 text-black mt-4 md:mt-0"
@@ -47,12 +41,5 @@ const Header: React.FC = () => {
     </header>
   );
 };
-// const mapStateToProps = (state) => ({
-//   searchQuery: state.searchQuery,
-// });
-
-// const mapDispatchToProps = {
-//   setSearchQuery,
-// };
 
 export default Header;

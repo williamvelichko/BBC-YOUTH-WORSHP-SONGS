@@ -4,8 +4,8 @@ module.exports = {
   // ... other configuration options ...
   entry: "./src/index.tsx",
   mode: "development",
-
   devServer: {
+    historyApiFallback: true,
     watchFiles: ["src/**/*"],
     static: path.join(__dirname, "dist"),
     compress: true,

@@ -6,23 +6,13 @@ import SongList from "./SongList";
 import Song from "./Song";
 
 const App: React.FC = () => {
-  //   const [filteredSongs, setFilteredSongs] = useState(songsData);
-
-  //   const handleSearch = (query: string) => {
-  //     const filtered = songsData.filter((song) =>
-  //       song.title.toLowerCase().includes(query.toLowerCase())
-  //     );
-  //     setFilteredSongs(filtered);
-  //   };
-
   return (
-    <div>
-      {/* <Header onSearch={handleSearch} /> */}
+    <div className="App">
       <Header />
 
       <Routes>
-        <Route path="/" element={<SongList />} />
-        <Route path="/song/:id" element={<Song />} />
+        <Route path="/" Component={SongList} />
+        <Route path="/song/:id" Component={Song} />
       </Routes>
     </div>
   );

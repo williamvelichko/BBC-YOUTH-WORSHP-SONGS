@@ -20,11 +20,6 @@ const songsReducer = (state = initialState, action) => {
       };
     case GET_SONGS:
       return action.payload;
-    // case FILTER_SONGS_BY_ID:
-    //   const filteredSongs = state.songs.filter(
-    //     (song) => song.id === action.payload
-    //   );
-    //   return filteredSongs;
     default:
       return state;
   }
