@@ -2,22 +2,24 @@
   {
     "title": "Marvelous Grace",
     "artist": "Unknown",
-    "lyrics": "1 Marvelous grace of our loving Lord,\nGrace that exceeds our sin and our guilt!\nYonder on Calvary's mount out-poured–\nThere where the blood of the Lamb was spilt.\nGrace, grace, God's grace,\nGrace that will pardon and cleanse within;\nGrace, grace, God's grace,\nGrace that is greater than all our sin!\n\n2 Sin and despair, like the sea-waves cold,\nThreaten the soul with infinite loss;\nGrace that is greater– yes, grace untold–\nPoints to the Refuge, the mighty Cross.\n\n3 Marvelous, infinite, matchless grace,\nFreely bestowed on all who believe!\nAll who are longing to see His face,\nWill you this moment His grace receive?",
-    "chords": ["G", "C", "D", "Em", "Am", "B7"],
+    "lyrics_without_chords": {
+      "1": "Marvelous grace of our loving Lord,\nGrace that exceeds our sin and our guilt!\nYonder on Calvary's mount out-poured–\nThere where the blood of the Lamb was spilt.\n",
+      "chorus": "Grace, grace, God's grace,\nGrace that will pardon and cleanse within;\nGrace, grace, God's grace,\nGrace that is greater than all our sin!\n\n",
+      "2": "Sin and despair, like the sea-waves cold,\nThreaten the soul with infinite loss;\nGrace that is greater– yes, grace untold–\nPoints to the Refuge, the mighty Cross.\n\n",
+      "3": " Marvelous, infinite, matchless grace,\nFreely bestowed on all who believe!\nAll who are longing to see His face,\nWill you this moment His grace receive?"
+    },
+    "lyrics_with_chords": {
+      "1": "[G]Marvelous grace of our [C]loving [G]Lord,\nGrace that [G]exceeds our [C]sin and our [G]guilt!\nYonder on [C]Calvary's [G]mount out-[D]poured–\nThere where the [G]blood of the [D]Lamb was [G]spilt.\n",
+      "chorus": "[G]Grace, [G]grace, [C]God's [G]grace,\nGrace that will [G]pardon and [C]cleanse with[G]in;\nGrace, [G]grace, [C]God's [G]grace,\nGrace that is [G]greater than [D]all our [G]sin!\n\n",
+      "2": "[G]Sin and despair, like the [C]sea-[G]waves cold,\nThreaten the [G]soul with [C]infinite [G]loss;\nGrace that is [C]greater– [G]yes, grace un-[D]told–\nPoints to the [G]Refuge, the [D]mighty [G]Cross.\n\n",
+      "3": "[G]Marvelous, infinite, [C]match-[G]less [C]grace,\nFreely be[C]stowed on [G]all who be[D]lieve!\nAll who are [G]longing to [D]see His [G]face,\nWill you this [G]moment His [D]grace re[G]ceive?"
+    },
+    "chordsOriginal": ["G", "C", "D", "Em", "Am", "B7"],
+    "chordsTranspose": {
+      "C": ["C", "F", "G", "Am", "Dm", "E7"],
+      "D": ["D", "G", "A", "Bm", "Em", "F#7"],
+      "E": ["E", "A", "B", "C#m", "F#m", "G#7"]
+    },
     "id": 1
-  },
-  {
-    "title": "Leaning on the Everlasting Arms",
-    "artist": "Anthony J. Showalter and Elisha A. Hoffman",
-    "lyrics": "What a fellowship, what a joy divine,\nLeaning on the everlasting arms;\nWhat a blessedness, what a peace is mine,\nLeaning on the everlasting arms.",
-    "chords": ["G", "C", "D", "Em", "Am", "B7"],
-    "id": 2
-  },
-  {
-    "title": "What a Friend We Have in Jesus",
-    "artist": "Joseph M. Scriven",
-    "lyrics": "What a friend\nWe have in Jesus\nAll our sins and griefs to bear\nWhat a privilege to carry\nEverything to God in prayer",
-    "chords": ["C", "F", "G", "Am", "Dm", "E7"],
-    "id": 3
   }
 ]

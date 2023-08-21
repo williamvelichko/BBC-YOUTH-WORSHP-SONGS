@@ -1,5 +1,5 @@
 import { GET_SONGS, FILTER_SONGS_BY_SEARCH } from "./songsActionTypes";
-import songs from "../../data/songsDataType2.json";
+import songs from "../../data/songs.json";
 
 const initialState = {
   songs,
