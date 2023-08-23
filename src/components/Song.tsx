@@ -74,21 +74,6 @@ const Song: React.FC<SongProps> = ({ songs }) => {
           ))}
         </select>
         <div className="space-y-4">
-          {/* {lyricsToShow.map((section, index) => (
-            <div key={index} className="text-gray-700 whitespace-pre-line">
-              {section.split("\n").map((line, lineIndex) => {
-                const [chordLine, lyricLine] = line.split(/\s{2,}/);
-
-                return (
-                  <div key={lineIndex}>
-                    <span className="font-bold">{chordLine}</span>
-                    <br />
-                    {lyricLine}
-                  </div>
-                );
-              })}
-            </div>
-          ))} */}
           {lyricsToShow.map((section, index) => (
             <ChordTransposer
               key={index}
