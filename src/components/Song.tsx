@@ -75,14 +75,17 @@ const Song: React.FC<SongProps> = ({ songs }) => {
         </select>
         <div className="space-y-4">
           {lyricsToShow.map((section, index) => (
-            <ChordTransposer
-              key={index}
-              originalChords={song.chordsOriginal}
-              transposeKey={transposeKey}
-              differentChords={song.chordsTranspose}
-            >
-              {section}
-            </ChordTransposer>
+            <div key={index} className="text-gray-700 whitespace-pre-line">
+              <ChordTransposer
+                originalChords={song.chordsOriginal}
+                transposeKey={transposeKey}
+                differentChords={song.chordsTranspose}
+                lyrics={section}
+              >
+                {section}
+              </ChordTransposer>
+              <br />
+            </div>
           ))}
         </div>
       </div>
