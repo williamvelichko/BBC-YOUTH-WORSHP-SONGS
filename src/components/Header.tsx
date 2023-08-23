@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { connect } from "react-redux";
 import { filterSongsBySearch } from "./store/actions";
 
 const Header: React.FC = () => {
