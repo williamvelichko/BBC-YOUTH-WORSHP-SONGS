@@ -22,7 +22,7 @@ module.exports = {
         },
       },
       {
-        test: /\.css$/i,
+        test: /\.css$/, // Add this line
         include: path.resolve(__dirname, "src"),
         use: ["style-loader", "css-loader", "postcss-loader"],
       },

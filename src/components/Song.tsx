@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import ChordTransposer from "./Logic/ChordTransposer";
+import LyricsSwiper from "./LyricSwiper";
 
 export interface SongData {
   title: string;
@@ -22,6 +23,8 @@ interface SongProps {
 const Song: React.FC<SongProps> = ({ songs }) => {
   const [showLyricsWithChords, setShowLyricsWithChords] = useState(false);
   const [transposeKey, setTransposeKey] = useState("original");
+  const [showSwiperView, setShowSwiperView] = useState(false); // Add this state
+
   const { id } = useParams<{ id?: string }>();
 
   const songId = id ? parseInt(id, 10) : -1;
@@ -34,6 +37,9 @@ const Song: React.FC<SongProps> = ({ songs }) => {
 
   const toggleLyrics = () => {
     setShowLyricsWithChords(!showLyricsWithChords);
+  };
+  const toggleSwiperView = () => {
+    setShowSwiperView(!showSwiperView);
   };
 
   const handleTransposeChange = (
@@ -73,17 +79,27 @@ const Song: React.FC<SongProps> = ({ songs }) => {
             </option>
           ))}
         </select>
+        <button
+          className="bg-green-500 text-white px-3 py-1 rounded-md mb-1 ml-4" // Add some margin
+          onClick={toggleSwiperView}
+        >
+          {showSwiperView ? "Normal View" : "Swiper View"}
+        </button>
         <div className="space-y-4">
-          {lyricsToShow.map((section, index) => (
-            <ChordTransposer
-              key={index}
-              originalChords={song.chordsOriginal}
-              transposeKey={transposeKey}
-              differentChords={song.chordsTranspose}
-            >
-              {section}
-            </ChordTransposer>
-          ))}
+          {lyricsToShow.map((section, index) =>
+            ({ showLyricsWithChords } ? (
+              <ChordTransposer
+                key={index}
+                originalChords={song.chordsOriginal}
+                transposeKey={transposeKey}
+                differentChords={song.chordsTranspose}
+              >
+                {section}
+              </ChordTransposer>
+            ) : (
+              <LyricsSwiper lyrics={song.lyrics_without_chords} />
+            ))
+          )}
         </div>
       </div>
     </div>
