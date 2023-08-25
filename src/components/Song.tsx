@@ -34,7 +34,7 @@ const Song: React.FC<SongProps> = ({ songs }) => {
       }
     }
   }, [id, songs]);
-
+  console.log(song);
   if (!song) {
     return <div>Song not found</div>;
   }

@@ -2,10 +2,25 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { filterSongsBySearch } from "./store/actions";
+import {
+  signInWithGoogle,
+  signOutFromGoogle,
+  checkLoggedIn,
+} from "./Firebase/firebase-Auth";
 
 const Header: React.FC = () => {
+  const [logedIn, setLogedIn] = useState(false);
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSignIn = async () => {
+    await signInWithGoogle();
+    await setLogedIn(checkLoggedIn);
+  };
+  const handleLogout = async () => {
+    await signOutFromGoogle;
+    await setLogedIn(checkLoggedIn);
+  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -27,6 +42,11 @@ const Header: React.FC = () => {
             >
               All Songs
             </Link>
+            {logedIn ? (
+              <button onClick={handleLogout}>Logout</button>
+            ) : (
+              <button onClick={handleSignIn}>Sign-In</button>
+            )}
           </div>
           <input
             className="lg:w-1/2  border rounded px-4 py-2 focus:outline-none placeholder-gray-400 text-black mt-4 md:mt-0"
