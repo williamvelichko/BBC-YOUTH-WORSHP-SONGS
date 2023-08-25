@@ -1,6 +1,8 @@
-import { GET_SONGS, FILTER_SONGS_BY_SEARCH } from "./songsActionTypes";
-//import songs from "../../data/songs.json";
-import { db } from "../Firebase/firebase-config";
+import {
+  GET_SONGS,
+  FILTER_SONGS_BY_SEARCH,
+  FILTER_SONGS_BY_ID,
+} from "./songsActionTypes";
 
 const initialState = {
   songs: [],
@@ -10,15 +12,16 @@ const initialState = {
 // Create a reducer function to manage the state
 const songsReducer = (state = initialState, action) => {
   switch (action.type) {
-    // case FILTER_SONGS_BY_SEARCH:
-    //   const query = action.payload.toLowerCase();
-    //   const filteredSongs = initialState.songs.filter((song) =>
-    //     song.title.toLowerCase().includes(query)
-    //   );
-    //   return {
-    //     ...state,
-    //     songs: filteredSongs,
-    //   };
+    case FILTER_SONGS_BY_ID:
+      return {
+        ...state,
+        filterSong: action.payload,
+      };
+    case FILTER_SONGS_BY_SEARCH:
+      return {
+        ...state,
+        searchQuery: action.payload,
+      };
     case GET_SONGS:
       return {
         ...state,

@@ -1,10 +1,6 @@
-import {
-  FILTER_SONGS_BY_ID,
-  FILTER_SONGS_BY_SEARCH,
-  GET_SONGS,
-} from "./songsActionTypes"; // Import your SongData type
+import { FILTER_SONGS_BY_SEARCH, GET_SONGS } from "./songsActionTypes"; // Import your SongData type
 import { Dispatch } from "redux";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../Firebase/firebase-config";
 
 export const fetchSongsFromFirestore = () => async (dispatch: Dispatch) => {
@@ -24,16 +20,32 @@ export const fetchSongsFromFirestore = () => async (dispatch: Dispatch) => {
   }
 };
 
-export const filterSongsById = (id?: string) => {
-  return {
-    type: FILTER_SONGS_BY_ID,
-    payload: id,
-  };
-};
-
 export const filterSongsBySearch = (query: string) => {
   return {
     type: FILTER_SONGS_BY_SEARCH,
     payload: query,
   };
 };
+
+//Storage
+
+// export const filterSongById = (id: string) => async (dispatch: Dispatch) => {
+//   try {
+//     const songDoc = doc(db, "songs", id);
+//     const songSnapshot = await getDoc(songDoc);
+//     if (songSnapshot.exists()) {
+//       const songData = songSnapshot.data();
+//       return {
+//         type: FILTER_SONGS_BY_ID,
+//         payload: songData,
+//       };
+//     } else {
+//       dispatch({
+//         type: FILTER_SONGS_BY_ID,
+//         payload: null,
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error filtering song by ID:", error);
+//   }
+// };

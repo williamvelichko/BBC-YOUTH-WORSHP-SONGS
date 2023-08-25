@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import ChordTransposer from "./Logic/ChordTransposer";
-
 export interface SongData {
   title: string;
   lyrics_with_chords: string;
@@ -13,20 +12,28 @@ export interface SongData {
   chordsTranspose: {
     [key: string]: string[];
   };
-  id: number;
+  id: string;
 }
 
 interface SongProps {
-  songs: SongData[]; // Pass the songs data as a prop
+  songs: SongData[];
 }
 const Song: React.FC<SongProps> = ({ songs }) => {
+  const [song, setSong] = useState<SongData | undefined>(undefined);
   const [showLyricsWithChords, setShowLyricsWithChords] = useState(false);
   const [transposeKey, setTransposeKey] = useState("original");
-  const { id } = useParams<{ id?: string }>();
+  const { id } = useParams<{ id: string }>();
 
-  const songId = id ? parseInt(id, 10) : -1;
-  console.log(songId);
-  const song = songs.find((song) => song.id === songId);
+  useEffect(() => {
+    if (id) {
+      const foundSong = songs.find((song) => song.id === id);
+      if (foundSong) {
+        setSong(foundSong);
+      } else {
+        setSong(undefined);
+      }
+    }
+  }, [id, songs]);
 
   if (!song) {
     return <div>Song not found</div>;
