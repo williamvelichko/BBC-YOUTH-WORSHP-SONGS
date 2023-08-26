@@ -9,13 +9,7 @@ const Header: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
-  const {
-    isLoggedIn,
-    signInWithGoogle,
-    signOutFromGoogle,
-    checkLoggedIn,
-    user,
-  } = useFirebaseAuth();
+  const { isLoggedIn, signOutFromGoogle, user } = useFirebaseAuth();
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -26,12 +20,6 @@ const Header: React.FC = () => {
     setShowPopup(!showPopup);
   };
 
-  const handleLogout = () => {
-    signOutFromGoogle();
-    setShowPopup(false);
-  };
-
-  console.log(isLoggedIn, user);
   return (
     <header className="bg-gray-900 py-4 text-white flex justify-center">
       <div className="container mx-auto px-4 md:px-6 lg:m-0 ">

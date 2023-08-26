@@ -8,13 +8,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const {
-    isLoggedIn,
-    signInWithGoogle,
-    signOutFromGoogle,
-    checkLoggedIn,
-    user,
-  } = useFirebaseAuth();
+  const { isLoggedIn, signInWithGoogle, signOutFromGoogle } = useFirebaseAuth();
 
   const handleLogout = () => {
     signOutFromGoogle();
@@ -47,23 +41,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           />
         </svg>
       </button>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-5 text-center">
         {isLoggedIn ? (
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded my-4"
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded my-1"
             onClick={handleLogout}
           >
             Logout
           </button>
         ) : (
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded my-4"
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded my-1"
             onClick={signInWithGoogle}
           >
             Sign In
           </button>
         )}
-        <Link to="/" className="bg-green-500 text-white px-4 py-2 rounded my-4">
+        <Link
+          to="/addSong"
+          className="w-full bg-green-500 text-white px-4 py-2 rounded my-1"
+        >
           Controls
         </Link>
       </div>
