@@ -8,7 +8,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
-  const { isLoggedIn, signInWithGoogle, signOutFromGoogle } = useFirebaseAuth();
+  const { isLoggedIn, signInWithGoogle, signOutFromGoogle, isAdmin } =
+    useFirebaseAuth();
 
   const handleLogout = () => {
     signOutFromGoogle();
@@ -57,12 +58,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             Sign In
           </button>
         )}
-        <Link
-          to="/addSong"
-          className="w-full bg-green-500 text-white px-4 py-2 rounded my-1"
-        >
-          Controls
-        </Link>
+        {isAdmin && (
+          <Link
+            to="/addSong"
+            className="w-full bg-green-500 text-white px-4 py-2 rounded my-1"
+          >
+            Controls
+          </Link>
+        )}
       </div>
     </div>
   );
