@@ -1,17 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { SongData } from "./Song"; // Import the SongData interface
-import { connect } from "react-redux"; // Import connect
+import { SongData } from "./Song";
+import { connect } from "react-redux";
+// import { RootState } from ".//store/storeReducer";
 
+import { fetchSongsFromFirestore } from "./store/actions";
 interface SongListProps {
-  songs: SongData[]; // Prop to receive the songs data array
+  songs: SongData[];
+  searchQuery: string;
+  fetchSongsFromFirestore: () => void;
 }
 
-const SongList: React.FC<SongListProps> = ({ songs }) => {
+const SongList: React.FC<SongListProps> = ({
+  songs,
+  searchQuery,
+  fetchSongsFromFirestore,
+}) => {
+  useEffect(() => {
+    fetchSongsFromFirestore();
+  }, [fetchSongsFromFirestore]);
+
+  const filteredSongs = songs.filter((song) =>
+    song.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="flex justify-center mt-8">
       <div className="grid grid-cols-2 gap-6 max-w-4xl ">
-        {songs.map((song) => (
+        {filteredSongs.map((song) => (
           <div
             key={song.id}
             className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
@@ -28,8 +44,14 @@ const SongList: React.FC<SongListProps> = ({ songs }) => {
 
 const mapStateToProps = (state) => {
   return {
-    songs: state.songs, // Pass the songs from Redux state to props
+    songs: state.songs,
+    searchQuery: state.searchQuery,
   };
 };
 
-export default connect(mapStateToProps)(SongList);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchSongsFromFirestore: () => dispatch(fetchSongsFromFirestore()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SongList);

@@ -1,25 +1,32 @@
-import { GET_SONGS, FILTER_SONGS_BY_SEARCH } from "./songsActionTypes";
-import songs from "../../data/songs.json";
+import {
+  GET_SONGS,
+  FILTER_SONGS_BY_SEARCH,
+  FILTER_SONGS_BY_ID,
+} from "./songsActionTypes";
 
 const initialState = {
-  songs,
+  songs: [],
   searchQuery: "",
 };
 
 // Create a reducer function to manage the state
 const songsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FILTER_SONGS_BY_SEARCH:
-      const query = action.payload.toLowerCase();
-      const filteredSongs = initialState.songs.filter((song) =>
-        song.title.toLowerCase().includes(query)
-      );
+    case FILTER_SONGS_BY_ID:
       return {
         ...state,
-        songs: filteredSongs,
+        filterSong: action.payload,
+      };
+    case FILTER_SONGS_BY_SEARCH:
+      return {
+        ...state,
+        searchQuery: action.payload,
       };
     case GET_SONGS:
-      return action.payload;
+      return {
+        ...state,
+        songs: action.payload,
+      };
     default:
       return state;
   }

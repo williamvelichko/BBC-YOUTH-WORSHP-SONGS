@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import Header from "./Header";
 import SongList from "./SongList";
 import Song from "./Song";
+import AddSong from "./SongControls/AddSong";
 
 const App: React.FC = () => {
   return (
@@ -11,8 +12,9 @@ const App: React.FC = () => {
       <Header />
 
       <Routes>
-        <Route path="/" Component={SongList} />
-        <Route path="/song/:id" Component={Song} />
+        <Route path="/" element={<SongList />} />
+        <Route path="/song/:id" element={<Song />} />
+        <Route path="/addSong" element={<AddSong />} />
       </Routes>
     </div>
   );

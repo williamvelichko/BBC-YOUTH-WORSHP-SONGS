@@ -43,8 +43,18 @@ const ChordTransposer: React.FC<ChordTransposerProps> = ({
       return `[${transposedChord}${rest}]`;
     }
   );
+  console.log(transposedText.split("\n"));
+  const lines = transposedText.split("\n").map((line, index) => (
+    <p key={index} className="chord-line">
+      {line.split("\n\n").map((verse, vIndex) => (
+        <span key={vIndex} className="chord-verse">
+          {verse}
+        </span>
+      ))}
+    </p>
+  ));
 
-  return <div className="whitespace-pre-line">{transposedText}</div>;
+  return <div className="whitespace-pre-line">{lines}</div>;
 };
 
 export default ChordTransposer;
