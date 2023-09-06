@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export interface ChordTransposerProps {
   originalChords: {
@@ -13,16 +13,23 @@ export interface ChordTransposerProps {
 
 const ChordTransposer: React.FC<ChordTransposerProps> = ({
   originalChords,
-  transposeKey,
   children,
   differentChords,
+  transposeKey, // Receive transposeKey via props
 }) => {
+  const [currentTransposeKey, setCurrentTransposeKey] = useState(transposeKey);
+
+  useEffect(() => {
+    // Update the currentTransposeKey state when the transposeKey prop changes
+    setCurrentTransposeKey(transposeKey);
+  }, [transposeKey]);
+
   const transposeChord = (chord: string) => {
     if (!originalChords[chord]) {
       return chord;
     }
 
-    const transposeChords = differentChords[transposeKey];
+    const transposeChords = differentChords[currentTransposeKey];
     if (!transposeChords) {
       return chord;
     }
@@ -34,58 +41,52 @@ const ChordTransposer: React.FC<ChordTransposerProps> = ({
 
     return transposeChords[index];
   };
+  const renderChordLine = (line: string) => {
+    const chords = line.match(/\[.*?\]/g);
 
-  // Split the children string by '\\n\n' for verses/paragraphs and '\\n' for lines
-  const verses = children.split("\\n\\n");
-
-  const lines = verses.map((verse, vIndex) => {
-    const linesInVerse = verse.split("\\n");
-
-    const verseContent = linesInVerse.map((line, lIndex) => {
-      const chords = line.match(/\[.*?\]/g);
-      console.log(chords);
-      if (chords) {
-        const chordLine = chords
-          .map((chord) => transposeChord(chord.replace(/\[|\]/g, "")))
-          .join("\t");
-
-        const lyricLine = line.replace(/\[.*?\]/g, "");
+    if (chords) {
+      let currentIndex = 0; // Keep track of the current character index
+      const chordLine = chords.map((chord) => {
+        const chordText = chord.replace(/\[|\]/g, "");
+        const chordIndex = line.indexOf(chord, currentIndex);
+        const wordBeforeChord = line.substring(currentIndex, chordIndex);
+        currentIndex = chordIndex + chord.length; // Update current index
 
         return (
-          <div key={lIndex} className="chord-line">
-            <div className="chords">
-              <span className="chord">{chordLine}</span>
-            </div>
-            <div className="lyrics">
-              <span className="lyric">{lyricLine}</span>
-            </div>
+          <div key={chordIndex} className="relative inline-block">
+            <span className="text-blue-500 absolute top-0 -mt-4 left-0">
+              {transposeChord(chordText)}
+            </span>
+            {wordBeforeChord}
           </div>
         );
-      }
+      });
 
-      // If the line is empty or only contains spaces, render it as an empty line
-      if (line.trim() === "") {
-        return <div key={lIndex} className="empty-line" />;
-      }
-
-      // If the line is non-empty and doesn't contain chords, render it as pure lyrics
       return (
-        <div key={lIndex} className="lyric-line">
-          <div className="lyrics">
-            <span className="lyric">{line}</span>
-          </div>
+        <div className="flex space-x-2 mt-4" key={line}>
+          {[...chordLine, line.substring(currentIndex)]}{" "}
         </div>
       );
-    });
+    }
 
-    return (
-      <div key={vIndex} className="verse">
-        {verseContent}
-      </div>
-    );
-  });
+    return <div>{line}</div>; // No chords found, render the line as is
+  };
 
-  return <div className="whitespace-pre-line space-y-2">{lines}</div>;
+  const paragraphs = children.split("\\n\\n");
+
+  return (
+    <div className="whitespace-pre-line space-y-6">
+      {paragraphs.map((paragraph, pIndex) => (
+        <div key={pIndex} className={pIndex > 0 ? "mt-6" : ""}>
+          {paragraph.split("\\n").map((line, lIndex) => (
+            <div key={lIndex} className="flex space-x-2 ">
+              {renderChordLine(line)}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default ChordTransposer;
