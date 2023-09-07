@@ -45,12 +45,20 @@ const ChordTransposer: React.FC<ChordTransposerProps> = ({
     const chords = line.match(/\[.*?\]/g);
 
     if (chords) {
-      let currentIndex = 0; // Keep track of the current character index
+      let currentIndex = 0;
+
       const chordLine = chords.map((chord) => {
         const chordText = chord.replace(/\[|\]/g, "");
         const chordIndex = line.indexOf(chord, currentIndex);
-        const wordBeforeChord = line.substring(currentIndex, chordIndex);
-        currentIndex = chordIndex + chord.length; // Update current index
+
+        const wordBeforeChord = line.substring(currentIndex, chordIndex).trim();
+        currentIndex = chordIndex + chord.length;
+
+        const nextChordIndex = line.indexOf("[", currentIndex);
+        const endIndex = nextChordIndex !== -1 ? nextChordIndex : line.length;
+
+        const wordAfterChord = line.substring(currentIndex, endIndex).trim();
+        currentIndex = endIndex;
 
         return (
           <div key={chordIndex} className="relative inline-block">
@@ -58,18 +66,22 @@ const ChordTransposer: React.FC<ChordTransposerProps> = ({
               {transposeChord(chordText)}
             </span>
             {wordBeforeChord}
+            {wordBeforeChord && wordAfterChord ? " " : null}
+            {wordAfterChord}
           </div>
         );
       });
 
+      // Create a flex container to display the chordLine
       return (
         <div className="flex space-x-2 mt-4" key={line}>
-          {[...chordLine, line.substring(currentIndex)]}{" "}
+          {chordLine}
         </div>
       );
     }
 
-    return <div>{line}</div>; // No chords found, render the line as is
+    // If no chords are found, render the line as is
+    return <div>{line}</div>;
   };
 
   const paragraphs = children.split("\\n\\n");
