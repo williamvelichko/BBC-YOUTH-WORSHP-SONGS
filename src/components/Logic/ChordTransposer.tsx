@@ -47,40 +47,42 @@ const ChordTransposer: React.FC<ChordTransposerProps> = ({
     if (chords) {
       let currentIndex = 0;
 
-      const chordLine = chords.map((chord) => {
-        const chordText = chord.replace(/\[|\]/g, "");
-        const chordIndex = line.indexOf(chord, currentIndex);
-
-        const wordBeforeChord = line.substring(currentIndex, chordIndex).trim();
-        currentIndex = chordIndex + chord.length;
-
-        const nextChordIndex = line.indexOf("[", currentIndex);
-        const endIndex = nextChordIndex !== -1 ? nextChordIndex : line.length;
-
-        const wordAfterChord = line.substring(currentIndex, endIndex).trim();
-        currentIndex = endIndex;
-
-        return (
-          <div key={chordIndex} className="relative inline-block">
-            <span className="text-blue-500 absolute top-0 -mt-4 left-0">
-              {transposeChord(chordText)}
-            </span>
-            {wordBeforeChord}
-            {wordBeforeChord && wordAfterChord ? " " : null}
-            {wordAfterChord}
-          </div>
-        );
-      });
-
-      // Create a flex container to display the chordLine
       return (
-        <div className="flex space-x-2 mt-4" key={line}>
-          {chordLine}
+        <div className="flex flex-wrap mt-4 " key={line}>
+          {chords.map((chord, index) => {
+            const chordText = chord.replace(/\[|\]/g, "");
+            const chordIndex = line.indexOf(chord, currentIndex);
+            const wordBeforeChord = line
+              .substring(currentIndex, chordIndex)
+              .trim();
+            currentIndex = chordIndex + chord.length;
+
+            const nextChordIndex = line.indexOf("[", currentIndex);
+            const endIndex =
+              nextChordIndex !== -1 ? nextChordIndex : line.length;
+            const wordAfterChord = line
+              .substring(currentIndex, endIndex)
+              .trim();
+            currentIndex = endIndex;
+
+            return (
+              <div key={index} className="relative inline-block mb-2 md:mb-0">
+                <span className="text-blue-500 absolute top-0 -mt-4 left-0">
+                  {transposeChord(chordText)}
+                </span>
+                {wordBeforeChord && (
+                  <span className="word">{wordBeforeChord} </span>
+                )}
+                {wordAfterChord && (
+                  <span className="word">{wordAfterChord} &nbsp;</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       );
     }
 
-    // If no chords are found, render the line as is
     return <div>{line}</div>;
   };
 
