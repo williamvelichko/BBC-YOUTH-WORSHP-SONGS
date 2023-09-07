@@ -1,13 +1,30 @@
-import { FILTER_SONGS_BY_SEARCH, GET_SONGS } from "./songsActionTypes"; // Import your SongData type
+import {
+  ADD_SONG,
+  FILTER_SONGS_BY_SEARCH,
+  GET_SONGS,
+} from "./songsActionTypes";
 import { Dispatch } from "redux";
 import { collection, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
 import { db } from "../Firebase/firebase-config";
 
-export const addSongToFirestore = async (songData: {}) => {
-  const userCollection = collection(db, "songs");
-  await addDoc(userCollection, songData);
-};
+import "firebase/firestore";
 
+export const addSongToFirestore = (songData) => {
+  return async (dispatch) => {
+    try {
+      const songsCollection = collection(db, "songs");
+      const docRef = await addDoc(songsCollection, songData);
+      console.log("Song added successfully!");
+
+      dispatch({
+        type: ADD_SONG,
+        payload: { songId: docRef.id, songData },
+      });
+    } catch (error) {
+      console.error("Error Adding Song", error);
+    }
+  };
+};
 export const fetchSongsFromFirestore = () => async (dispatch: Dispatch) => {
   try {
     const songsSnapshot = await getDocs(collection(db, "songs"));
