@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import ChordTransposer from "./Logic/ChordTransposer";
+
 export interface SongData {
   title: string;
   lyrics_with_chords: string;
@@ -18,6 +19,7 @@ export interface SongData {
 interface SongProps {
   songs: SongData[];
 }
+
 const Song: React.FC<SongProps> = ({ songs }) => {
   const [song, setSong] = useState<SongData | undefined>(undefined);
   const [showLyricsWithChords, setShowLyricsWithChords] = useState(false);
@@ -34,10 +36,12 @@ const Song: React.FC<SongProps> = ({ songs }) => {
       }
     }
   }, [id, songs]);
-  console.log(song);
+
   if (!song) {
     return <div>Song not found</div>;
   }
+
+  console.log(song);
 
   const toggleLyrics = () => {
     setShowLyricsWithChords(!showLyricsWithChords);
@@ -50,8 +54,8 @@ const Song: React.FC<SongProps> = ({ songs }) => {
   };
 
   const lyricsToShow = showLyricsWithChords
-    ? song.lyrics_with_chords.split("\n\n")
-    : song.lyrics_without_chords.split("\n\n");
+    ? song.lyrics_with_chords
+    : song.lyrics_without_chords;
 
   return (
     <div className="flex justify-center items-center">
@@ -71,27 +75,20 @@ const Song: React.FC<SongProps> = ({ songs }) => {
           onChange={handleTransposeChange}
           className="mb-2 bg-white border border-gray-300 rounded-md px-2 py-1"
         >
-          <option value="original">
-            Key: {Object.keys(song.chordsOriginal)}
-          </option>
+          <option value="original">Key: Original</option>
           {Object.keys(song.chordsTranspose).map((key) => (
             <option key={key} value={key}>
-              Key:{key}
+              Key: {key}
             </option>
           ))}
         </select>
-        <div className="space-y-4">
-          {lyricsToShow.map((section, index) => (
-            <ChordTransposer
-              key={index}
-              originalChords={song.chordsOriginal}
-              transposeKey={transposeKey}
-              differentChords={song.chordsTranspose}
-            >
-              {section}
-            </ChordTransposer>
-          ))}
-        </div>
+        <ChordTransposer
+          originalChords={song.chordsOriginal}
+          transposeKey={transposeKey}
+          differentChords={song.chordsTranspose}
+        >
+          {lyricsToShow}
+        </ChordTransposer>
       </div>
     </div>
   );
@@ -99,7 +96,7 @@ const Song: React.FC<SongProps> = ({ songs }) => {
 
 const mapStateToProps = (state) => {
   return {
-    songs: state.songs, // Assuming you've structured your state with filteredSongs
+    songs: state.songs,
   };
 };
 
