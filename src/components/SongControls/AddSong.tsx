@@ -1,110 +1,272 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { addSongToFirestore } from "components/store/actions";
+import ChordInput from "./AddSongUtils/ChordInput";
+import SongFormHelper from "./AddSongUtils/SongFormHelper";
+interface SongData {
+  title: string;
+  lyrics_with_chords: string;
+  lyrics_without_chords: string;
+  chordsOriginal: Record<string, string[]>;
+  chordsTranspose: Record<string, string[]>;
+}
 
 interface AddSongProps {
-  addSongToFirestore: (song: any) => void; // Define the addSong action prop
+  addSongToFirestore: (song: SongData) => void;
 }
 
 const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
-  const [title, setTitle] = useState("");
-  const [lyricsWithChords, setLyricsWithChords] = useState("");
-  const [lyricsWithoutChords, setLyricsWithoutChords] = useState("");
-  const [originalChords, setOriginalChords] = useState("");
-  const [transposeChords, setTransposeChords] = useState("");
+  const {
+    title,
+    setTitle,
+    lyricsWithChords,
+    setLyricsWithChords,
+    lyricsWithoutChords,
+    setLyricsWithoutChords,
+    originalChordPairs,
+    setOriginalChordPairs,
+    transposeChordPairs,
+    setTransposeChordPairs,
+    handleChordChange,
+    addChord,
+    removeChord,
+    handleChordPairsChange,
+    addChordPair,
+  } = SongFormHelper();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Create a new song object
-    const newSong = {
-      title,
-      lyrics_with_chords: lyricsWithChords,
+    const chordsOriginal: Record<string, string[]> = {};
+    const chordsTranspose: Record<string, string[]> = {};
+
+    originalChordPairs.forEach((pair) => {
+      chordsOriginal[pair.key] = pair.chords;
+    });
+
+    transposeChordPairs.forEach((pair) => {
+      chordsTranspose[pair.key] = pair.chords;
+    });
+
+    const newSong: SongData = {
       lyrics_without_chords: lyricsWithoutChords,
-      chordsOriginal: {},
-      chordsTranspose: {},
-      id: "your-generated-id", // Replace with a unique ID generation logic
+      lyrics_with_chords: lyricsWithChords,
+      title: title,
+      chordsOriginal,
+      chordsTranspose,
     };
 
-    // Dispatch the addSong action
-    // addSong(newSong);
-
-    // Clear the input fields
-    setTitle("");
-    setLyricsWithChords("");
-    setLyricsWithoutChords("");
+    addSongToFirestore(newSong);
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold mb-4">Add New Song</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Title:
-          </label>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 w-full">
+      <form className="bg-white shadow-md rounded px-8 py-6 space-y-4 w-full md:w-9/12">
+        <div className="text-center text-xl font-semibold mb-4">
+          Song Details
+        </div>
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold">Title</h4>
           <input
+            className="border rounded w-full py-2 px-3"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-          />
+          ></input>
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Lyrics with Chords:
-          </label>
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold">Lyrics With Chords</h4>
           <textarea
+            className="border rounded w-full py-2 px-3"
+            rows={6}
             value={lyricsWithChords}
             onChange={(e) => setLyricsWithChords(e.target.value)}
             required
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-          />
+          ></textarea>
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Lyrics without Chords:
-          </label>
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold">Lyrics Without Chords</h4>
           <textarea
+            className="border rounded w-full py-2 px-3"
+            rows={6}
             value={lyricsWithoutChords}
             onChange={(e) => setLyricsWithoutChords(e.target.value)}
             required
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-          />
+          ></textarea>
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Original Chords:
-          </label>
-          <input
-            type="text"
-            value={originalChords}
-            onChange={(e) => setOriginalChords(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-          />
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col mb-4 w-full md:w-1/2">
+            <h4 className="text-lg font-semibold">Original Chords</h4>
+            <div className="flex flex-col">
+              {originalChordPairs.map((pair, index) => (
+                <div className="mb-4" key={index}>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex flex-col">
+                      <label className="text-sm">Key:</label>
+                      <input
+                        className="border rounded w-20 py-1 px-2"
+                        type="text"
+                        value={pair.key}
+                        onChange={(e) =>
+                          handleChordChange(
+                            originalChordPairs,
+                            index,
+                            "key",
+                            e.target.value,
+                            setOriginalChordPairs
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-sm">Chords:</label>
+                      {pair.chords.map((chord, chordIndex) => (
+                        <ChordInput
+                          key={chordIndex}
+                          chord={chord}
+                          onChange={(newChord) =>
+                            handleChordPairsChange(
+                              originalChordPairs,
+                              index,
+                              "chords",
+                              [
+                                ...pair.chords.slice(0, chordIndex),
+                                newChord,
+                                ...pair.chords.slice(chordIndex + 1),
+                              ],
+                              setOriginalChordPairs
+                            )
+                          }
+                          onRemove={() =>
+                            removeChord(
+                              originalChordPairs,
+                              index,
+                              chordIndex,
+                              setOriginalChordPairs
+                            )
+                          }
+                        />
+                      ))}
+                      <button
+                        type="button"
+                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                        onClick={() =>
+                          addChord(
+                            originalChordPairs,
+                            index,
+                            setOriginalChordPairs
+                          )
+                        }
+                      >
+                        Add Chord
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col mb-4 w-full md:w-1/2">
+            <h4 className="text-lg font-semibold">Transposable Chords</h4>
+            {transposeChordPairs.map((pair, index) => (
+              <div className="mb-4" key={index}>
+                <div className="flex items-center space-x-4">
+                  <div className="flex flex-col">
+                    <label className="text-sm">Key:</label>
+                    <input
+                      className="border rounded w-20 py-1 px-2"
+                      type="text"
+                      value={pair.key}
+                      onChange={(e) =>
+                        handleChordChange(
+                          transposeChordPairs,
+                          index,
+                          "key",
+                          e.target.value,
+                          setTransposeChordPairs
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <label className="text-sm">Chords:</label>
+                    {pair.chords.map((chord, chordIndex) => (
+                      <ChordInput
+                        key={chordIndex}
+                        chord={chord}
+                        onChange={(newChord) =>
+                          handleChordPairsChange(
+                            transposeChordPairs,
+                            index,
+                            "chords",
+                            [
+                              ...pair.chords.slice(0, chordIndex),
+                              newChord,
+                              ...pair.chords.slice(chordIndex + 1),
+                            ],
+                            setTransposeChordPairs
+                          )
+                        }
+                        onRemove={() =>
+                          removeChord(
+                            transposeChordPairs,
+                            index,
+                            chordIndex,
+                            setTransposeChordPairs
+                          )
+                        }
+                      />
+                    ))}
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded"
+                      type="button"
+                      onClick={() =>
+                        addChord(
+                          transposeChordPairs,
+                          index,
+                          setTransposeChordPairs
+                        )
+                      }
+                    >
+                      Add Chord
+                    </button>
+                  </div>
+                </div>
+                <div className="w-full ">
+                  {index === transposeChordPairs.length - 1 && (
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded mt-4 w-6/12 md:w-4/12"
+                      type="button"
+                      onClick={() =>
+                        addChordPair(
+                          transposeChordPairs,
+                          index,
+                          setTransposeChordPairs
+                        )
+                      }
+                    >
+                      Add More
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-col">
-          <label className="text-sm font-medium text-gray-700 mb-1">
-            Transpose Chords:
-          </label>
-          <input
-            type="text"
-            value={transposeChords}
-            onChange={(e) => setTransposeChords(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500"
-          />
+        <div className="w-full flex justify-center">
+          <button
+            className="bg-blue-500 text-white px-4 py-2 rounded w-1/2 md:w-1/4"
+            type="button"
+            onClick={handleSubmit}
+          >
+            Add Song
+          </button>
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
-        >
-          Add Song
-        </button>
       </form>
     </div>
   );
 };
+
 const mapDispatchToProps = (dispatch) => {
   return {
     addSongToFirestore: (song) => dispatch(addSongToFirestore(song)),
