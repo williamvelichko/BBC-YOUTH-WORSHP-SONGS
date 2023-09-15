@@ -41,7 +41,7 @@ const Song: React.FC<SongProps> = ({ songs }) => {
     return <div>Song not found</div>;
   }
 
-  console.log(song);
+  console.log(songs);
 
   const toggleLyrics = () => {
     setShowLyricsWithChords(!showLyricsWithChords);

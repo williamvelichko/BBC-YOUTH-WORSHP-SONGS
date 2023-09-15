@@ -3,6 +3,7 @@ import {
   FILTER_SONGS_BY_SEARCH,
   FILTER_SONGS_BY_ID,
   ADD_SONG,
+  EDIT_SONG,
 } from "./songsActionTypes";
 
 const initialState = {
@@ -32,6 +33,30 @@ const songsReducer = (state = initialState, action) => {
       return {
         ...state,
         songs: action.payload,
+      };
+    // case EDIT_SONG:
+    // const { songId, songData } = action.payload;
+    // // Find the index of the song to be edited in the state
+    // const editedSongIndex = state.songs.findIndex((song) => song.id === songId);
+
+    // if (editedSongIndex !== -1) {
+    //   // Create a new array with the edited song data
+    //   const updatedSongs = [...state.songs];
+    //   updatedSongs[editedSongIndex] = {
+    //     ...updatedSongs[editedSongIndex],
+    //     ...songData,
+    //   };
+
+    //   return {
+    //     ...state,
+    //     songs: updatedSongs,
+    //   };
+    case EDIT_SONG:
+      const { songId, songData } = action.payload;
+      console.log(songData);
+      return {
+        ...state,
+        songs: action.payload, // Assuming payload is an array of songs
       };
     default:
       return state;
