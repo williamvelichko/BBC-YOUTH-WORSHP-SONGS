@@ -3,6 +3,7 @@ import {
   FILTER_SONGS_BY_SEARCH,
   GET_SONGS,
   EDIT_SONG,
+  DELETE_SONG,
 } from "./songsActionTypes";
 import { Dispatch } from "redux";
 import {
@@ -12,9 +13,9 @@ import {
   getDoc,
   addDoc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../Firebase/firebase-config";
-import { useNavigate } from "react-router-dom";
 
 import "firebase/firestore";
 
@@ -61,7 +62,6 @@ export const filterSongsBySearch = (query: string) => {
 
 export const editSongFromFirebase =
   (songData: any) => async (dispatch: Dispatch) => {
-    console.log("songData");
     try {
       const { id, ...updatedData } = songData;
 
@@ -79,25 +79,19 @@ export const editSongFromFirebase =
     }
   };
 
-//Storage
+export const deleteSongFromFirebase =
+  (songId: string) => async (dispatch: Dispatch) => {
+    try {
+      const songDocRef = doc(db, "songs", songId); // Reference to the specific song document in Firestore.
+      await deleteDoc(songDocRef);
 
-// export const filterSongById = (id: string) => async (dispatch: Dispatch) => {
-//   try {
-//     const songDoc = doc(db, "songs", id);
-//     const songSnapshot = await getDoc(songDoc);
-//     if (songSnapshot.exists()) {
-//       const songData = songSnapshot.data();
-//       return {
-//         type: FILTER_SONGS_BY_ID,
-//         payload: songData,
-//       };
-//     } else {
-//       dispatch({
-//         type: FILTER_SONGS_BY_ID,
-//         payload: null,
-//       });
-//     }
-//   } catch (error) {
-//     console.error("Error filtering song by ID:", error);
-//   }
-// };
+      console.log("Song deleted successfully!");
+
+      dispatch({
+        type: DELETE_SONG, // Define your action type for deleting a song.
+        payload: { songId: songId },
+      });
+    } catch (error) {
+      console.error("Error deleting song:", error);
+    }
+  };
