@@ -2,10 +2,19 @@ import {
   ADD_SONG,
   FILTER_SONGS_BY_SEARCH,
   GET_SONGS,
+  EDIT_SONG,
 } from "./songsActionTypes";
 import { Dispatch } from "redux";
-import { collection, getDocs, doc, getDoc, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  addDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../Firebase/firebase-config";
+import { useNavigate } from "react-router-dom";
 
 import "firebase/firestore";
 
@@ -25,6 +34,7 @@ export const addSongToFirestore = (songData) => {
     }
   };
 };
+
 export const fetchSongsFromFirestore = () => async (dispatch: Dispatch) => {
   try {
     const songsSnapshot = await getDocs(collection(db, "songs"));
@@ -48,6 +58,26 @@ export const filterSongsBySearch = (query: string) => {
     payload: query,
   };
 };
+
+export const editSongFromFirebase =
+  (songData: any) => async (dispatch: Dispatch) => {
+    console.log("songData");
+    try {
+      const { id, ...updatedData } = songData;
+
+      const songDocRef = doc(db, "songs", id); // Reference to the specific song document in Firestore.
+      await updateDoc(songDocRef, songData);
+
+      console.log("Song edited successfully!");
+
+      dispatch({
+        type: EDIT_SONG, // Define your action type for editing a song.
+        payload: { songId: id, songData: songData },
+      });
+    } catch (error) {
+      console.error("Error editing song:", error);
+    }
+  };
 
 //Storage
 

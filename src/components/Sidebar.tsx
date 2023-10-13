@@ -60,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         )}
         {isAdmin && (
           <Link
-            to="/addSong"
+            to="/controlPanel"
             className="w-full bg-green-500 text-white px-4 py-2 rounded my-1"
           >
             Controls

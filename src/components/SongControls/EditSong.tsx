@@ -1,25 +1,17 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { addSongToFirestore } from "components/store/actions";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import SongForm from "./SongForm";
+import { connect } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { editSongFromFirebase } from "components/store/actions";
 
-interface SongData {
-  title: string;
-  lyrics_with_chords: string;
-  lyrics_without_chords: string;
-  chordsOriginal: Record<string, string[]>;
-  chordsTranspose: Record<string, string[]>;
+interface EditSongProps {
+  songs: any;
+  editSongFromFirebase: any;
 }
 
-interface AddSongProps {
-  addSongToFirestore: any;
-}
-
-const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
-  const [title, setTitle] = useState("");
-  const [lyricsWithChords, setLyricsWithChords] = useState("");
-  const [lyricsWithoutChords, setLyricsWithoutChords] = useState("");
+const EditSong: React.FC<EditSongProps> = ({ songs, editSongFromFirebase }) => {
+  const [editedSong, setEditedSong] = useState<undefined>(undefined);
+  const { id } = useParams<{ id: string }>();
   const [originalChordPairs, setOriginalChordPairs] = useState<
     { key: string; chords: string[] }[]
   >([{ key: "", chords: [] }]);
@@ -28,20 +20,66 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
   >([{ key: "", chords: [] }]);
   const navigate = useNavigate();
 
+  const [editedTitle, setEditedTitle] = useState<string>("");
+  const [editedLyricsWithChords, setEditedLyricsWithChords] =
+    useState<string>("");
+  const [editedLyricsWithoutChords, setEditedLyricsWithoutChords] =
+    useState<string>("");
+  console.log(songs);
+  useEffect(() => {
+    if (Array.isArray(songs)) {
+      const foundSong = songs?.find((song: any) => song.id === id);
+
+      if (foundSong) {
+        setEditedSong(foundSong);
+        setEditedTitle(foundSong.title);
+        setEditedLyricsWithChords(foundSong.lyrics_with_chords);
+        setEditedLyricsWithoutChords(foundSong.lyrics_without_chords);
+
+        const originalChords: Record<string, string[]> =
+          foundSong.chordsOriginal;
+
+        const initialOriginalChordPairs = Object.entries(originalChords).map(
+          ([key, chords]) => ({
+            key,
+            chords,
+          })
+        );
+        setOriginalChordPairs(initialOriginalChordPairs);
+
+        const transposeChords: Record<string, string[]> =
+          foundSong.chordsTranspose;
+        const initialTransposeChordPairs = Object.entries(transposeChords).map(
+          ([key, chords]) => ({
+            key,
+            chords,
+          })
+        );
+        setTransposeChordPairs(initialTransposeChordPairs);
+      } else {
+        setEditedSong(undefined);
+      }
+    }
+  }, [id, songs]);
+
+  if (!editedSong) {
+    return <div>Song not found</div>;
+  }
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    setEditedTitle(e.target.value);
   };
 
   const handleLyricsWithChordsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setLyricsWithChords(e.target.value);
+    setEditedLyricsWithChords(e.target.value);
   };
 
   const handleLyricsWithoutChordsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setLyricsWithoutChords(e.target.value);
+    setEditedLyricsWithoutChords(e.target.value);
   };
 
   const handleChordChange = (chordPairs, index, property, newValue, setter) => {
@@ -80,7 +118,7 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
     setter(newChordPairs);
   };
 
-  const handleSubmit = () => {
+  const handleEditSong = () => {
     const chordsOriginal: Record<string, string[]> = {};
     const chordsTranspose: Record<string, string[]> = {};
 
@@ -92,15 +130,16 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
       chordsTranspose[pair.key] = pair.chords;
     });
 
-    const newSong: SongData = {
-      lyrics_without_chords: lyricsWithoutChords,
-      lyrics_with_chords: lyricsWithChords,
-      title: title,
+    const updatedSongData = {
+      title: editedTitle,
+      lyrics_with_chords: editedLyricsWithChords,
+      lyrics_without_chords: editedLyricsWithoutChords,
       chordsOriginal,
       chordsTranspose,
+      id: id,
     };
-
-    addSongToFirestore(newSong)
+    console.log(updatedSongData);
+    editSongFromFirebase(updatedSongData)
       .then(() => {
         navigate("/controlPanel");
       })
@@ -108,7 +147,6 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
         console.log(error);
       });
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 w-full">
       <SongForm
@@ -121,22 +159,27 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
         removeChord={removeChord}
         handleChordPairsChange={handleChordPairsChange}
         addChordPair={addChordPair}
-        onSubmit={handleSubmit}
+        onSubmit={handleEditSong}
         handleTitleChange={handleTitleChange}
         handleLyricsWithChordsChange={handleLyricsWithChordsChange}
         handleLyricsWithoutChordsChange={handleLyricsWithoutChordsChange}
-        title={title}
-        lyricsWithChords={lyricsWithChords}
-        lyricsWithoutChords={lyricsWithoutChords}
+        title={editedTitle}
+        lyricsWithChords={editedLyricsWithChords}
+        lyricsWithoutChords={editedLyricsWithoutChords}
       />
     </div>
   );
 };
 
+const mapStateToProps = (state) => {
+  return {
+    songs: state.songs,
+  };
+};
 const mapDispatchToProps = (dispatch) => {
   return {
-    addSongToFirestore: (song) => dispatch(addSongToFirestore(song)),
+    editSongFromFirebase: (song) => dispatch(editSongFromFirebase(song)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(AddSong);
+export default connect(mapStateToProps, mapDispatchToProps)(EditSong);
