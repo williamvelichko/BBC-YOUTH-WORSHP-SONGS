@@ -138,7 +138,7 @@ const EditSong: React.FC<EditSongProps> = ({ songs, editSongFromFirebase }) => {
       chordsTranspose,
       id: id,
     };
-    console.log(updatedSongData);
+
     editSongFromFirebase(updatedSongData)
       .then(() => {
         navigate("/controlPanel");

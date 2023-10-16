@@ -5,3 +5,4 @@ export const GET_SONGS = "GET_SONGS";
 export const SET_SEARCH_QUERY = "SET_SEARCH_QUERY";
 export const FILTER_SONGS_BY_SEARCH = "FILTER_SONGS_SEARCH";
 export const EDIT_SONG = "EDIT_SONG";
+export const DELETE_SONG = "DELETE_SONG";

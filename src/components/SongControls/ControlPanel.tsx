@@ -3,41 +3,48 @@ import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchSongsFromFirestore } from "components/store/actions";
 import Loading from "components/Loading";
+import DeleteSong from "./DeleteSong";
+
 const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
-  const [isLoading, setIsLoading] = useState(true); // State to track loading
+  const [isLoading, setIsLoading] = useState(true);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [song, setSong] = useState({});
 
   useEffect(() => {
     fetchSongsFromFirestore()
       .then(() => {
-        setIsLoading(false); // Set loading to false when data is fetched
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching songs:", error);
-        setIsLoading(false); // Set loading to false in case of an error
+        setIsLoading(false);
       });
   }, [fetchSongsFromFirestore]);
 
   const navigate = useNavigate();
 
   const handleEdit = (id) => {
-    // Implement logic to trigger the edit action, e.g., show an edit form
     console.log("Edit song clicked");
     navigate(`/editSong/${id}`);
   };
 
-  const handleDelete = () => {
-    // Implement logic to trigger the delete action, e.g., confirm deletion
+  const handleDelete = (song) => {
+    setShowDeletePopup(true);
+    setSong(song);
     console.log("Delete song clicked");
   };
 
   const handleAdd = () => {
-    // Implement logic to trigger the add action, e.g., show an add form
     console.log("Add new song clicked");
     navigate("/addSong");
   };
 
   return (
     <div className="control-panel mx-auto w-full max-w-screen-md">
+      {showDeletePopup && (
+        <DeleteSong setShowDelete={setShowDeletePopup} song={song} />
+      )}
+
       <h2 className="text-2xl font-semibold text-center mb-4 mt-5">
         Admin Control Panel
       </h2>
@@ -51,7 +58,7 @@ const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
         {isLoading ? (
           <Loading />
         ) : (
-          songs?.map((sng) => (
+          songs!.map((sng) => (
             <div
               key={sng.id}
               className="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md mb-4"
@@ -81,7 +88,7 @@ const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
                 </button>
                 <button
                   className="text-red-500 hover:text-red-700"
-                  onClick={() => handleDelete()}
+                  onClick={() => handleDelete(sng)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
