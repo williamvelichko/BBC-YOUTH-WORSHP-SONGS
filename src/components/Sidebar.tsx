@@ -20,7 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <div
       className={`fixed top-0 right-0 h-full bg-white shadow-md transition-transform transform ${
         isOpen ? "translate-x-0" : "translate-x-full"
-      } md:w-64 p-4`}
+      }  md:w-64 p-4 z-50`}
     >
       <button
         className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition duration-300"

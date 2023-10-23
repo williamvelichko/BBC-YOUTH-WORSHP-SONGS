@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
-import ChordTransposer from "./Logic/ChordTransposer";
-
+import UpdatedChordTransposer from "./Logic/UpdatedChordTransposer";
 export interface SongData {
   title: string;
   lyrics_with_chords: string;
@@ -23,7 +22,7 @@ interface SongProps {
 const Song: React.FC<SongProps> = ({ songs }) => {
   const [song, setSong] = useState<SongData | undefined>(undefined);
   const [showLyricsWithChords, setShowLyricsWithChords] = useState(false);
-  const [transposeKey, setTransposeKey] = useState("original");
+  const [transposeKey, setTransposeKey] = useState("G");
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
@@ -40,8 +39,6 @@ const Song: React.FC<SongProps> = ({ songs }) => {
   if (!song) {
     return <div>Song not found</div>;
   }
-
-  console.log(songs);
 
   const toggleLyrics = () => {
     setShowLyricsWithChords(!showLyricsWithChords);
@@ -82,13 +79,15 @@ const Song: React.FC<SongProps> = ({ songs }) => {
             </option>
           ))}
         </select>
-        <ChordTransposer
+        <UpdatedChordTransposer
           originalChords={song.chordsOriginal}
-          transposeKey={transposeKey}
-          differentChords={song.chordsTranspose}
+          transposeChords={song.chordsTranspose}
+          lyrics={lyricsToShow}
+          songKey={transposeKey}
+          lyricsWithoutChords={song.lyrics_without_chords}
         >
           {lyricsToShow}
-        </ChordTransposer>
+        </UpdatedChordTransposer>
       </div>
     </div>
   );

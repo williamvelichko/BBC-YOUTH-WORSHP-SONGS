@@ -33,7 +33,7 @@ const SongList: React.FC<SongListProps> = ({
   );
 
   return (
-    <div className="flex justify-center mt-8">
+    <div className="flex justify-center mt-8 ">
       <div className="grid grid-cols-2 gap-6 max-w-4xl ">
         {isLoading ? (
           <Loading />
