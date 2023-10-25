@@ -55,30 +55,38 @@ const Song: React.FC<SongProps> = ({ songs }) => {
     : song.lyrics_without_chords;
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="bg-white rounded-lg shadow-md p-6 mb-4 md:w-4/5 mt-5 w-full">
-        <h2 className="text-xl font-semibold mb-2">{song.title}</h2>
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded-md mb-1"
-          onClick={toggleLyrics}
-        >
-          {showLyricsWithChords
-            ? "Lyrics without Chords"
-            : "Lyrics with Chords"}
-        </button>
+    <div className="flex justify-center items-center mb-24">
+      <div className="bg-white rounded-lg shadow-md p-6 md:w-4/5 w-full mt-5 mb-8 ">
+        <div className="flex flex-col mb-4">
+          <div className="flex flex-col text-center">
+            <h2 className="flex flex-col items-center text-2xl font-bold mb-4">
+              {song.title}
+            </h2>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center mb-4">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-md sm:w-3/12 w-10/12"
+              onClick={toggleLyrics}
+            >
+              {showLyricsWithChords
+                ? "Lyrics without Chords"
+                : "Lyrics with Chords"}
+            </button>
 
-        <select
-          value={transposeKey}
-          onChange={handleTransposeChange}
-          className="mb-2 bg-white border border-gray-300 rounded-md px-2 py-1"
-        >
-          <option value="original">Key: Original</option>
-          {Object.keys(song.chordsTranspose).map((key) => (
-            <option key={key} value={key}>
-              Key: {key}
-            </option>
-          ))}
-        </select>
+            <select
+              value={transposeKey}
+              onChange={handleTransposeChange}
+              className="bg-white border border-gray-300 rounded-md px-4 py-2 sm:w-3/12 w-10/12"
+            >
+              <option value="original">Key: Original</option>
+              {Object.keys(song.chordsTranspose).map((key) => (
+                <option key={key} value={key}>
+                  Key: {key}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
         <UpdatedChordTransposer
           originalChords={song.chordsOriginal}
           transposeChords={song.chordsTranspose}

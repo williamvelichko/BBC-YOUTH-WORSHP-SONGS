@@ -33,18 +33,20 @@ const SongList: React.FC<SongListProps> = ({
   );
 
   return (
-    <div className="flex justify-center mt-8 ">
-      <div className="grid grid-cols-2 gap-6 max-w-4xl ">
+    <div className="flex flex-col justify-center items-center mt-8">
+      <div className="max-w-4xl sm:w-full w-11/12 border border-gray-300 rounded bg-gray-100 shadow-lg sm:p-6 p-3 min-h-screen">
         {isLoading ? (
           <Loading />
         ) : (
           filteredSongs.map((song) => (
             <div
               key={song.id}
-              className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+              className="p-3 my-1 bg-white border border-gray-300 rounded-lg hover:shadow-xl w-full"
             >
               <Link to={`/song/${song.id}`} className="song-link">
-                <h2 className="text-xl font-semibold">{song.title}</h2>
+                <h2 className="sm:text-lg text-sm font-semibold text-gray-800">
+                  {song.title}
+                </h2>
               </Link>
             </div>
           ))
