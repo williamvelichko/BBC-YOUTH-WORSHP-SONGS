@@ -1,54 +1,27 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { filterSongsBySearch } from "./store/actions";
-import useFirebaseAuth from "./Firebase/firebase-Auth";
 import Sidebar from "./Sidebar";
 
-const Header: React.FC = () => {
+const Footer: React.FC = () => {
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
-  const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
-  const { isLoggedIn, signOutFromGoogle, user, isAdmin } = useFirebaseAuth();
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    dispatch(filterSongsBySearch(query));
-  };
   const handleTogglePopup = () => {
     setShowPopup(!showPopup);
   };
-
   return (
-    <header className="bg-gray-900 py-4 text-white flex justify-center">
-      <div className="container mx-auto px-4 md:px-6 lg:m-0 ">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between items-center ">
-          <h1 className="text-2xl font-bold text-white mb-4 md:mb-0">
-            Worship Songs
-          </h1>
-          <div className="md:flex md:items-center space-x-4 w-full md:w-auto hidden sm:block">
-            <Link
-              to="/"
-              className="text-gray-300 hover:text-white transition duration-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md"
-            >
-              All Songs
-            </Link>
-          </div>
-          <input
-            className="border rounded px-4 py-2 focus:outline-none placeholder-gray-400 text-black mt-4 md:mt-0 sm:w-1/2 w-full"
-            type="text"
-            placeholder="Search songs..."
-            value={searchQuery}
-            onChange={handleSearch}
-          />
-        </div>
+    <div
+      className="flex flex-row justify-between fixed bottom-0 w-full bg-gray-800 text-gray-300 p-4"
+      style={{ zIndex: 1000 }}
+    >
+      <div className="md:flex md:items-center space-x-4 w-full md:w-auto">
+        <Link
+          to="/"
+          className="text-gray-300 hover:text-white transition duration-300 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-md"
+        >
+          All Songs
+        </Link>
       </div>
 
-      <button
-        className="settings-button hidden sm:block"
-        onClick={handleTogglePopup}
-      >
+      <button className="settings-button" onClick={handleTogglePopup}>
         <i className="fas fa-cog e"></i>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,8 +44,8 @@ const Header: React.FC = () => {
         </svg>
       </button>
       {showPopup && <Sidebar isOpen={showPopup} onClose={handleTogglePopup} />}
-    </header>
+    </div>
   );
 };
 
-export default Header;
+export default Footer;
