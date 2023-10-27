@@ -2,14 +2,20 @@ import React, { useEffect, useState } from "react";
 import SongForm from "./SongForm";
 import { connect } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { editSongFromFirebase } from "components/store/actions";
+import { editSongFromFirebase, fetchSongById } from "components/store/actions";
+import Loading from "components/Loading";
 
 interface EditSongProps {
   songs: any;
   editSongFromFirebase: any;
+  fetchSongById: any;
 }
 
-const EditSong: React.FC<EditSongProps> = ({ songs, editSongFromFirebase }) => {
+const EditSong: React.FC<EditSongProps> = ({
+  songs,
+  editSongFromFirebase,
+  fetchSongById,
+}) => {
   const [editedSong, setEditedSong] = useState<undefined>(undefined);
   const { id } = useParams<{ id: string }>();
   const [originalChordPairs, setOriginalChordPairs] = useState<
@@ -25,11 +31,9 @@ const EditSong: React.FC<EditSongProps> = ({ songs, editSongFromFirebase }) => {
     useState<string>("");
   const [editedLyricsWithoutChords, setEditedLyricsWithoutChords] =
     useState<string>("");
-  console.log(songs);
-  useEffect(() => {
-    if (Array.isArray(songs)) {
-      const foundSong = songs?.find((song: any) => song.id === id);
 
+  useEffect(() => {
+    fetchSongById(id).then((foundSong) => {
       if (foundSong) {
         setEditedSong(foundSong);
         setEditedTitle(foundSong.title);
@@ -59,11 +63,15 @@ const EditSong: React.FC<EditSongProps> = ({ songs, editSongFromFirebase }) => {
       } else {
         setEditedSong(undefined);
       }
-    }
+    });
   }, [id, songs]);
 
   if (!editedSong) {
-    return <div>Song not found</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,6 +187,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     editSongFromFirebase: (song) => dispatch(editSongFromFirebase(song)),
+    fetchSongById: (songId) => dispatch(fetchSongById(songId)),
   };
 };
 

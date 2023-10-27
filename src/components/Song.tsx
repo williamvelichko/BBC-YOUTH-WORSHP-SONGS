@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import UpdatedChordTransposer from "./Logic/UpdatedChordTransposer";
+import { fetchSongById } from "./store/actions";
+import Loading from "./Loading";
 export interface SongData {
   title: string;
   lyrics_with_chords: string;
@@ -16,10 +18,11 @@ export interface SongData {
 }
 
 interface SongProps {
-  songs: SongData[];
+  singleSong: SongData;
+  fetchSongById;
 }
 
-const Song: React.FC<SongProps> = ({ songs }) => {
+const Song: React.FC<SongProps> = ({ singleSong, fetchSongById }) => {
   const [song, setSong] = useState<SongData | undefined>(undefined);
   const [showLyricsWithChords, setShowLyricsWithChords] = useState(false);
   const [transposeKey, setTransposeKey] = useState("G");
@@ -27,17 +30,22 @@ const Song: React.FC<SongProps> = ({ songs }) => {
 
   useEffect(() => {
     if (id) {
-      const foundSong = songs.find((song) => song.id === id);
-      if (foundSong) {
-        setSong(foundSong);
-      } else {
-        setSong(undefined);
-      }
+      fetchSongById(id)
+        .then((sng) => {
+          setSong(sng);
+        })
+        .catch((error) => {
+          console.error("Error fetching song:", error);
+        });
     }
-  }, [id, songs]);
-
+  }, [fetchSongById]);
+  console.log(song);
   if (!song) {
-    return <div>Song not found</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 
   const toggleLyrics = () => {
@@ -103,8 +111,13 @@ const Song: React.FC<SongProps> = ({ songs }) => {
 
 const mapStateToProps = (state) => {
   return {
-    songs: state.songs,
+    singleSong: state.singleSong,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchSongById: (songId) => dispatch(fetchSongById(songId)),
   };
 };
 
-export default connect(mapStateToProps)(Song);
+export default connect(mapStateToProps, mapDispatchToProps)(Song);

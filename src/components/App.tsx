@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import Header from "./Header";
 import SongList from "./SongList";
@@ -7,8 +7,14 @@ import AddSong from "./SongControls/AddSong";
 import ControlPanel from "./SongControls/ControlPanel";
 import EditSong from "./SongControls/EditSong";
 import Footer from "./Footer";
+import { fetchSongsFromFirestore } from "./store/actions";
+import { connect } from "react-redux";
 
-const App: React.FC = () => {
+interface SongProps {
+  songs: any;
+}
+
+const App: React.FC<SongProps> = ({ songs }) => {
   const isSmallScreen = window.innerWidth <= 600;
 
   return (
@@ -28,4 +34,14 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+const mapState = (state) => {
+  return {
+    songs: state.songs,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchSongsFromFirestore: () => dispatch(fetchSongsFromFirestore()),
+  };
+};
+export default connect(mapState, mapDispatchToProps)(App);

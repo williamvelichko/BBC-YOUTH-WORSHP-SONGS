@@ -20,14 +20,15 @@ const SongList: React.FC<SongListProps> = ({
   useEffect(() => {
     fetchSongsFromFirestore()
       .then(() => {
-        setIsLoading(false); // Set loading to false when data is fetched
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching songs:", error);
-        setIsLoading(false); // Set loading to false in case of an error
+        setIsLoading(false);
       });
   }, [fetchSongsFromFirestore]);
 
+  console.log(songs);
   const filteredSongs = songs?.filter((song) =>
     song.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -62,7 +63,6 @@ const mapStateToProps = (state) => {
     searchQuery: state.searchQuery,
   };
 };
-
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchSongsFromFirestore: () => dispatch(fetchSongsFromFirestore()),
