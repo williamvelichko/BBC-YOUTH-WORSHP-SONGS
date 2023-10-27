@@ -10,6 +10,7 @@ import {
 const initialState = {
   songs: [],
   searchQuery: "",
+  singleSong: [],
 };
 
 // Create a reducer function to manage the state
@@ -18,12 +19,12 @@ const songsReducer = (state = initialState, action) => {
     case ADD_SONG:
       return {
         ...state,
-        songs: action.payload, // Assuming payload is an array of songs
+        songs: action.payload,
       };
     case FILTER_SONGS_BY_ID:
       return {
         ...state,
-        filterSong: action.payload,
+        singleSong: action.payload,
       };
     case FILTER_SONGS_BY_SEARCH:
       return {
@@ -44,6 +45,7 @@ const songsReducer = (state = initialState, action) => {
         ...state,
         songs: action.payload, // Assuming payload is an array of songs
       };
+
     default:
       return state;
   }

@@ -4,6 +4,7 @@ import {
   GET_SONGS,
   EDIT_SONG,
   DELETE_SONG,
+  FILTER_SONGS_BY_ID,
 } from "./songsActionTypes";
 import { Dispatch } from "redux";
 import {
@@ -95,3 +96,27 @@ export const deleteSongFromFirebase =
       console.error("Error deleting song:", error);
     }
   };
+
+export const fetchSongById = (songId) => {
+  return async (dispatch) => {
+    try {
+      const songDocRef = doc(db, "songs", songId);
+      const songDocSnap = await getDoc(songDocRef);
+
+      if (songDocSnap.exists()) {
+        const songData = songDocSnap.data();
+        dispatch({
+          type: FILTER_SONGS_BY_ID,
+          payload: songData,
+        });
+        return songData;
+      } else {
+        // console.error("Song not found");
+        return {};
+      }
+    } catch (error) {
+      console.log("error fetching single song");
+      return error;
+    }
+  };
+};
