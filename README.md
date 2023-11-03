@@ -1,3 +1,3 @@
-# BBC-YOUTH-WORSHP-SONGS
+# YOUTHWORSHIP APP
 
 ### Live version : https://youthworship.vercel.app/
