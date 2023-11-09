@@ -31,6 +31,8 @@ const EditSong: React.FC<EditSongProps> = ({
     useState<string>("");
   const [editedLyricsWithoutChords, setEditedLyricsWithoutChords] =
     useState<string>("");
+  const [titleError, setTitleError] = useState(false);
+  const [lyricsError, setLyricsError] = useState(false);
 
   useEffect(() => {
     fetchSongById(id).then((foundSong) => {
@@ -174,6 +176,8 @@ const EditSong: React.FC<EditSongProps> = ({
         title={editedTitle}
         lyricsWithChords={editedLyricsWithChords}
         lyricsWithoutChords={editedLyricsWithoutChords}
+        titleError={titleError}
+        lyricsError={lyricsError}
       />
     </div>
   );

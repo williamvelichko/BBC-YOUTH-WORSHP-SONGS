@@ -26,10 +26,14 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
   const [transposeChordPairs, setTransposeChordPairs] = useState<
     { key: string; chords: string[] }[]
   >([{ key: "", chords: [] }]);
+  const [titleError, setTitleError] = useState(false);
+  const [lyricsError, setLyricsError] = useState(false);
+
   const navigate = useNavigate();
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
+    setTitleError(false);
   };
 
   const handleLyricsWithChordsChange = (
@@ -42,6 +46,7 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setLyricsWithoutChords(e.target.value);
+    setLyricsError(false);
   };
 
   const handleChordChange = (chordPairs, index, property, newValue, setter) => {
@@ -81,32 +86,49 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
   };
 
   const handleSubmit = () => {
-    const chordsOriginal: Record<string, string[]> = {};
-    const chordsTranspose: Record<string, string[]> = {};
+    if (title === "") {
+      setTitleError(true);
+    }
+    if (lyricsWithoutChords === "") {
+      setLyricsError(true);
+    }
 
-    originalChordPairs.forEach((pair) => {
-      chordsOriginal[pair.key] = pair.chords;
-    });
+    if (title && lyricsWithoutChords) {
+      let chordsOriginal: Record<string, string[]> = {};
+      let chordsTranspose: Record<string, string[]> = {};
 
-    transposeChordPairs.forEach((pair) => {
-      chordsTranspose[pair.key] = pair.chords;
-    });
+      if (originalChordPairs.length > 0) {
+        originalChordPairs.forEach((pair) => {
+          if (pair.key && pair.chords.length > 0) {
+            chordsOriginal[pair.key] = pair.chords;
+          }
+        });
+      }
 
-    const newSong: SongData = {
-      lyrics_without_chords: lyricsWithoutChords,
-      lyrics_with_chords: lyricsWithChords,
-      title: title,
-      chordsOriginal,
-      chordsTranspose,
-    };
+      if (transposeChordPairs.length > 0) {
+        transposeChordPairs.forEach((pair) => {
+          if (pair.key && pair.chords.length > 0) {
+            chordsTranspose[pair.key] = pair.chords;
+          }
+        });
+      }
 
-    addSongToFirestore(newSong)
-      .then(() => {
-        navigate("/controlPanel");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      const newSong: SongData = {
+        lyrics_without_chords: lyricsWithoutChords,
+        lyrics_with_chords: lyricsWithChords,
+        title: title,
+        chordsOriginal,
+        chordsTranspose,
+      };
+
+      addSongToFirestore(newSong)
+        .then(() => {
+          navigate("/controlPanel");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -128,6 +150,8 @@ const AddSong: React.FC<AddSongProps> = ({ addSongToFirestore }) => {
         title={title}
         lyricsWithChords={lyricsWithChords}
         lyricsWithoutChords={lyricsWithoutChords}
+        titleError={titleError}
+        lyricsError={lyricsError}
       />
     </div>
   );

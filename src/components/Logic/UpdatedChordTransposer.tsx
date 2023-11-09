@@ -19,15 +19,18 @@ const UpdatedChordTransposer: React.FC<UpdatedChordTransposerProps> = ({
   lyricsWithoutChords,
 }) => {
   const key = Object.keys(originalChords);
-
   let orChord = originalChords[key[0]];
   let trChord = transposeChords[songKey];
 
-  if (trChord === undefined) {
+  if (!trChord) {
     trChord = orChord;
   }
 
-  const transposedLyrics = transposeLyricsChords(children, orChord, trChord);
+  let transposedLyrics = children;
+
+  if (orChord && trChord) {
+    transposedLyrics = transposeLyricsChords(children, orChord, trChord);
+  }
 
   const paragraphs = transposedLyrics.split("\\n\\n");
 

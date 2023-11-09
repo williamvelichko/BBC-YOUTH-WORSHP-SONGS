@@ -18,6 +18,8 @@ interface SongFormProps {
   title: any;
   lyricsWithChords: any;
   lyricsWithoutChords: any;
+  titleError: any;
+  lyricsError: any;
 }
 
 const SongForm: React.FC<SongFormProps> = ({
@@ -37,6 +39,8 @@ const SongForm: React.FC<SongFormProps> = ({
   title,
   lyricsWithChords,
   lyricsWithoutChords,
+  titleError,
+  lyricsError,
 }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,13 +53,16 @@ const SongForm: React.FC<SongFormProps> = ({
       <div className="mb-4">
         <h4 className="text-lg font-semibold">Title</h4>
         <input
-          className="border rounded w-full py-2 px-3"
+          className={`border rounded w-full py-2 px-3 ${
+            titleError ? "border-red-500" : "border-gray-300"
+          }`}
           type="text"
           name="title"
           value={title}
           onChange={handleTitleChange}
           required
         />
+        {titleError && <p className="text-red-500">Title is required</p>}
       </div>
       <div className="mb-4">
         <h4 className="text-lg font-semibold">Lyrics With Chords</h4>
@@ -71,13 +78,16 @@ const SongForm: React.FC<SongFormProps> = ({
       <div className="mb-4">
         <h4 className="text-lg font-semibold">Lyrics Without Chords</h4>
         <textarea
-          className="border rounded w-full py-2 px-3"
+          className={`border rounded w-full py-2 px-3 ${
+            lyricsError ? "border-red-500" : "border-gray-300"
+          }`}
           name="lyrics_without_chords"
           value={lyricsWithoutChords}
           onChange={handleLyricsWithoutChordsChange}
           rows={6}
           required
         ></textarea>
+        {lyricsError && <p className="text-red-500">Lyrics are required</p>}
       </div>
       <div className="flex flex-col md:flex-row">
         <div className="flex flex-col mb-4 w-full md:w-1/2">

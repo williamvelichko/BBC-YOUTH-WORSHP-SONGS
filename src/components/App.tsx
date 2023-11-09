@@ -27,7 +27,7 @@ const App: React.FC<SongProps> = ({ songs }) => {
         <Route path="/controlPanel" element={<ControlPanel />} />
         <Route path="/editSong/:id" element={<EditSong />} />
       </Routes>
-      <div className="sm:hidden">
+      <div className="md:hidden">
         <Footer />
       </div>
     </div>
