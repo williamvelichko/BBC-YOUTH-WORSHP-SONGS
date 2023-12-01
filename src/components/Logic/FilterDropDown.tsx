@@ -14,13 +14,12 @@ const FilterDropDown: React.FC<Props> = ({
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   const filterSongs = (filter: string) => {
-    filterSongsByType(filter);
-
     if (filter === "All") {
       fetchSongsFromFireStore();
     } else {
-      setSelectedFilter(filter);
+      filterSongsByType(filter);
     }
+    setSelectedFilter(filter);
   };
 
   const uniqueFilters = Array.from(
@@ -28,7 +27,7 @@ const FilterDropDown: React.FC<Props> = ({
   ).filter((filter) => filter);
 
   return (
-    <div className="flex flex-row items-start mt-4">
+    <div className="flex flex-row items-start mb-4">
       <select
         value={selectedFilter}
         onChange={(e) => filterSongs(e.target.value)}
