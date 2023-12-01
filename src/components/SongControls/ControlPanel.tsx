@@ -5,7 +5,7 @@ import { fetchSongsFromFirestore } from "components/store/actions";
 import Loading from "components/Loading";
 import DeleteSong from "./DeleteSong";
 
-const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
+const ControlPanel = ({ songs, fetchSongsFromFirestore, searchQuery }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [song, setSong] = useState({});
@@ -39,6 +39,31 @@ const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
     navigate("/addSong");
   };
 
+  const sortSongsByTitle = (songs: any) => {
+    return songs.sort((a, b) => {
+      const regex = /^(\d+)\.\s/;
+      const matchA = a.title.match(regex);
+      const matchB = b.title.match(regex);
+
+      if (matchA && matchB) {
+        const numA = parseInt(matchA[1]);
+        const numB = parseInt(matchB[1]);
+
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return numA - numB;
+        }
+      }
+
+      return a.title.localeCompare(b.title);
+    });
+  };
+
+  let filteredSongs = songs?.filter((song) =>
+    song.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  filteredSongs = sortSongsByTitle(filteredSongs);
+
   return (
     <div className="control-panel mx-auto w-full max-w-screen-md">
       {showDeletePopup && (
@@ -58,7 +83,7 @@ const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
         {isLoading ? (
           <Loading />
         ) : (
-          songs!.map((sng) => (
+          filteredSongs!.map((sng) => (
             <div
               key={sng.id}
               className="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md mb-4"
@@ -117,6 +142,7 @@ const ControlPanel = ({ songs, fetchSongsFromFirestore }) => {
 const mapStateToProps = (state) => {
   return {
     songs: state.songs,
+    searchQuery: state.searchQuery,
   };
 };
 const mapDispatchToProps = (dispatch) => {
