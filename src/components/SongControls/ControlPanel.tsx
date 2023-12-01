@@ -57,10 +57,11 @@ const ControlPanel = ({ songs, fetchSongsFromFirestore, searchQuery }) => {
       return a.title.localeCompare(b.title);
     });
   };
-
-  let filteredSongs = songs?.filter((song) =>
-    song.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  let filteredSongs = Array.isArray(songs)
+    ? songs.filter((song) =>
+        song.title.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   filteredSongs = sortSongsByTitle(filteredSongs);
 
