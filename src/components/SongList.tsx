@@ -3,17 +3,20 @@ import { Link } from "react-router-dom";
 import { SongData } from "./Song";
 import { connect } from "react-redux";
 import Loading from "./Loading";
-import { fetchSongsFromFirestore } from "./store/actions";
+import { fetchSongsFromFirestore, filterSongsByType } from "./store/actions";
+import FilterDropDown from "./Logic/FilterDropDown";
 interface SongListProps {
   songs: SongData[];
   searchQuery: string;
   fetchSongsFromFirestore: any;
+  filterSongsByType: any;
 }
 
 const SongList: React.FC<SongListProps> = ({
   songs,
   searchQuery,
   fetchSongsFromFirestore,
+  filterSongsByType,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,14 +31,39 @@ const SongList: React.FC<SongListProps> = ({
       });
   }, [fetchSongsFromFirestore]);
 
-  console.log(songs);
-  const filteredSongs = songs?.filter((song) =>
+  const sortSongsByTitle = (songs: any) => {
+    return songs.sort((a, b) => {
+      const regex = /^(\d+)\.\s/;
+      const matchA = a.title.match(regex);
+      const matchB = b.title.match(regex);
+
+      if (matchA && matchB) {
+        const numA = parseInt(matchA[1]);
+        const numB = parseInt(matchB[1]);
+
+        if (!isNaN(numA) && !isNaN(numB)) {
+          return numA - numB;
+        }
+      }
+
+      return a.title.localeCompare(b.title);
+    });
+  };
+
+  let filteredSongs = songs?.filter((song) =>
     song.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  filteredSongs = sortSongsByTitle(filteredSongs);
+
   return (
-    <div className="flex flex-col justify-center items-center mt-8">
-      <div className="max-w-4xl sm:w-full w-11/12 border border-gray-300 rounded bg-gray-100 shadow-lg sm:p-6 p-3 min-h-screen">
+    <div className="flex flex-col justify-center items-center mt-8 md:mb-8 mb-20">
+      <div className="max-w-4xl sm:w-full w-11/12 border border-gray-300 rounded bg-gray-100 sm:p-6 p-3 min-h-screen">
+        <FilterDropDown
+          songs={songs}
+          fetchSongsFromFireStore={fetchSongsFromFirestore}
+          filterSongsByType={filterSongsByType}
+        />
         {isLoading ? (
           <Loading />
         ) : (
@@ -66,6 +94,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchSongsFromFirestore: () => dispatch(fetchSongsFromFirestore()),
+    filterSongsByType: (type: string) => dispatch(filterSongsByType(type)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(SongList);
