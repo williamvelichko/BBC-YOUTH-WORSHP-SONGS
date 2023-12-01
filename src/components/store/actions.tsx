@@ -5,6 +5,7 @@ import {
   EDIT_SONG,
   DELETE_SONG,
   FILTER_SONGS_BY_ID,
+  FILTER_SONGS_BY_TYPE,
 } from "./songsActionTypes";
 import { Dispatch } from "redux";
 import {
@@ -15,6 +16,8 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "../Firebase/firebase-config";
 
@@ -97,26 +100,44 @@ export const deleteSongFromFirebase =
     }
   };
 
-export const fetchSongById = (songId) => {
-  return async (dispatch) => {
-    try {
-      const songDocRef = doc(db, "songs", songId);
-      const songDocSnap = await getDoc(songDocRef);
+export const fetchSongById = (songId) => async (dispatch: Dispatch) => {
+  try {
+    const songDocRef = doc(db, "songs", songId);
+    const songDocSnap = await getDoc(songDocRef);
 
-      if (songDocSnap.exists()) {
-        const songData = songDocSnap.data();
-        dispatch({
-          type: FILTER_SONGS_BY_ID,
-          payload: songData,
-        });
-        return songData;
-      } else {
-        // console.error("Song not found");
-        return {};
-      }
-    } catch (error) {
-      console.log("error fetching single song");
-      return error;
+    if (songDocSnap.exists()) {
+      const songData = songDocSnap.data();
+      dispatch({
+        type: FILTER_SONGS_BY_ID,
+        payload: songData,
+      });
+      return songData;
+    } else {
+      // console.error("Song not found");
+      return {};
     }
-  };
+  } catch (error) {
+    console.log("error fetching single song");
+    return error;
+  }
+};
+
+export const filterSongsByType = (type) => async (dispatch: Dispatch) => {
+  try {
+    const songsRef = collection(db, "songs");
+    const filteredQuery = query(songsRef, where("filter", "==", type));
+    const querySnapshot = await getDocs(filteredQuery);
+
+    const songs = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    dispatch({
+      type: FILTER_SONGS_BY_TYPE,
+      payload: songs,
+    });
+  } catch (error) {
+    console.error("Error filtering songs by type:", error);
+  }
 };

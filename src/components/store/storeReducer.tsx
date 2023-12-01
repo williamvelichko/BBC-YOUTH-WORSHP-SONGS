@@ -5,6 +5,7 @@ import {
   ADD_SONG,
   EDIT_SONG,
   DELETE_SONG,
+  FILTER_SONGS_BY_TYPE,
 } from "./songsActionTypes";
 
 const initialState = {
@@ -30,6 +31,11 @@ const songsReducer = (state = initialState, action) => {
       return {
         ...state,
         searchQuery: action.payload,
+      };
+    case FILTER_SONGS_BY_TYPE:
+      return {
+        ...state,
+        songs: action.payload,
       };
     case GET_SONGS:
       return {

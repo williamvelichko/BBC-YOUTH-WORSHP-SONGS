@@ -15,6 +15,7 @@ export interface SongData {
     [key: string]: string[];
   };
   id: string;
+  filter: string;
 }
 
 interface SongProps {
